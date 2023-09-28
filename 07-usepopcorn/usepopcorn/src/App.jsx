@@ -3,83 +3,85 @@ import Navbar from "./Navbar";
 import SearchBox from "./SearchBox";
 import WatchedBox from "./WatchedBox";
 
-const tempWatchedData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-    runtime: 148,
-    imdbRating: 8.8,
-    userRating: 10,
-  },
-  {
-    imdbID: "tt0088763",
-    Title: "Back to the Future",
-    Year: "1985",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BZmU0M2Y1OGUtZjIxNi00ZjBkLTg1MjgtOWIyNThiZWIwYjRiXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg",
-    runtime: 116,
-    imdbRating: 8.5,
-    userRating: 9,
-  },
-];
-
-const tempMovieData = [
-  {
-    imdbID: "tt1375666",
-    Title: "Inception",
-    Year: "2010",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt0133093",
-    Title: "The Matrix",
-    Year: "1999",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BNzQzOTk3OTAtNDQ0Zi00ZTVkLWI0MTEtMDllZjNkYzNjNTc4L2ltYWdlXkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SX300.jpg",
-  },
-  {
-    imdbID: "tt6751668",
-    Title: "Parasite",
-    Year: "2019",
-    Poster:
-      "https://m.media-amazon.com/images/M/MV5BYWZjMjk3ZTItODQ2ZC00NTY5LWE0ZDYtZTI3MjcwN2Q5NTVkXkEyXkFqcGdeQXVyODk4OTc3MTY@._V1_SX300.jpg",
-  },
-];
 
 
 const API_KEY = 'edcee4cf'
-const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}&s=cuba`
+const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}&s=`
 
 
 export default function App() {
   const [movies, setMovies] = useState([])
-  const [watched, setWatched] = useState(tempWatchedData)
+  const [watched, setWatched] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [query, setQuery] = useState("");
+  const [selectedId, setSelectedId] = useState(null)
+
+
+  function handlerSelectId(id) {
+    setSelectedId(id)
+  }
+
+  function handlerCloseMovie() {
+    setSelectedId(null)
+  }
+
 
   useEffect(() => {
-    const getMovies = async () => {
-      const respond = await fetch(API_URL)
-      const data = await respond.json()
-      setMovies(data.Search)
+    const fetchMovies = async () => {
+      try {
+        setIsLoading(true)
+        setError('')
+        const respond = await fetch(API_URL + query)
+        if (!respond.ok) throw new Error('can not fetch data')
+        const data = await respond.json()
+        if (data.Response === 'False') throw new Error(data.Error)
+        setMovies(data.Search)
+        setIsLoading(false)
+      } catch (error) {
+        setIsLoading(false)
+        setError(error.message)
+      }
+
     }
 
-    getMovies()
+    if (query.length < 3) {
+      setMovies([])
+      setError('')
+      return
+    }
 
-  }, [])
+    fetchMovies()
+
+  }, [query])
 
 
   return (
     <>
       <header>
-        <Navbar />
+        <Navbar query={query} setQuery={setQuery} />
       </header>
+
       <main className="main">
-        <SearchBox movies={movies} />
-        <WatchedBox watched={watched} />
+        <section>
+          {isLoading && <p className="loader">Loading...</p>}
+          {!isLoading && !error && movies.length !== 0 && <SearchBox movies={movies} onSelect={handlerSelectId} />}
+          {movies.length === 0 && <p>Please search for movies</p>}
+          {error && <p>{error}</p>}
+        </section>
+        <section>
+          {selectedId ? <MovieDetails selectedId={selectedId} onClose={handlerCloseMovie} /> : <WatchedBox watched={watched} />}
+        </section>
+
       </main>
+
     </>
   );
+}
+
+function MovieDetails({ selectedId, onClose }) {
+  return <div className="details" >
+    <button className="btn" onClick={onClose}>&larr;</button>
+    {selectedId}
+  </div>
 }
