@@ -1,4 +1,4 @@
-const Navbar = ({ query, setQuery }) => {
+const Navbar = ({ query, setQuery, results }) => {
 
 
     return (<nav className="nav-bar">
@@ -14,7 +14,7 @@ const Navbar = ({ query, setQuery }) => {
             onChange={(e) => setQuery(e.target.value)}
         />
         <p className="num-results">
-            Found <strong>X</strong> results
+            Found <strong>{results}</strong> results
         </p>
     </nav>)
 };
