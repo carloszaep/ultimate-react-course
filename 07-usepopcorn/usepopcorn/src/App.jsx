@@ -43,11 +43,13 @@ export default function App() {
   }
 
   useEffect(() => {
+
+    const controller = new AbortController()
     const fetchMovies = async () => {
       try {
         setIsLoading(true)
         setError('')
-        const respond = await fetch(API_URL + "s=" + query)
+        const respond = await fetch(API_URL + "s=" + query, { signal: controller.signal })
         if (!respond.ok) throw new Error('can not fetch data')
         const data = await respond.json()
         if (data.Response === 'False') throw new Error(data.Error)
@@ -68,7 +70,13 @@ export default function App() {
 
     fetchMovies()
 
+    return function () {
+      controller.abort()
+    }
+
   }, [query])
+
+
 
 
   return (
@@ -105,6 +113,20 @@ function MovieDetails({ selectedId, onClose, onAddWatched, isInTheList }) {
     Poster: poster, Runtime: runtime,
     imdbRating, Plot: plot, Released: released,
     Actors: actors, Director: director, Genre: genre } = movie
+
+  useEffect(() => {
+    function callback() {
+      if (e.code === "Escape") {
+        onClose()
+      }
+    }
+    document.addEventListener('keydown', callback)
+
+    return () => {
+      document.removeEventListener('keydown', callback)
+    }
+  }, [])
+
 
   useEffect(() => {
     async function getMovieDetails() {
