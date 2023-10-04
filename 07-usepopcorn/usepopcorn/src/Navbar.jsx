@@ -1,5 +1,11 @@
-const Navbar = ({ query, setQuery, results }) => {
+import { useEffect, useRef } from "react";
 
+const Navbar = ({ query, setQuery, results }) => {
+    const search = useRef()
+
+    useEffect(() => {
+        search.current.focus()
+    }, [])
 
     return (<nav className="nav-bar">
         <div className="logo">
@@ -7,6 +13,7 @@ const Navbar = ({ query, setQuery, results }) => {
             <h1>usePopcorn</h1>
         </div>
         <input
+            ref={search}
             className="search"
             type="text"
             placeholder="Search movies..."

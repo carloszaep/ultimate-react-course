@@ -11,13 +11,16 @@ const API_URL = `http://www.omdbapi.com/?apikey=${API_KEY}&`
 
 export default function App() {
   const [movies, setMovies] = useState([])
-  const [watched, setWatched] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null)
   const [isInTheList, setIsInTheList] = useState(false)
-
+  const [watched, setWatched] = useState(function () {
+    const storedValue = localStorage.getItem('watched')
+    if (!storedValue) return []
+    return JSON.parse(storedValue)
+  })
 
 
 
@@ -33,6 +36,8 @@ export default function App() {
     setIsInTheList(false)
   }
 
+
+
   function handlerAddWatched(movie) {
     setWatched(watched => [...watched, movie])
   }
@@ -41,6 +46,20 @@ export default function App() {
   function handlerDeleteWatched(id) {
     setWatched((watched) => watched.filter(movie => movie.imdbID !== id))
   }
+
+  useEffect(() => {
+    localStorage.setItem('watched', JSON.stringify(watched))
+  }, [watched])
+
+
+  useEffect(() => {
+    const data = localStorage.getItem('watched')
+    const dataParse = JSON.parse(data)
+
+    if (dataParse.length >= 1) setWatched(dataParse)
+  }, [])
+
+
 
   useEffect(() => {
 
@@ -115,7 +134,7 @@ function MovieDetails({ selectedId, onClose, onAddWatched, isInTheList }) {
     Actors: actors, Director: director, Genre: genre } = movie
 
   useEffect(() => {
-    function callback() {
+    function callback(e) {
       if (e.code === "Escape") {
         onClose()
       }
