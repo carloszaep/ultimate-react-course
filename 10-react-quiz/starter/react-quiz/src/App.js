@@ -3,7 +3,9 @@ import Main from "./Main";
 import Loader from "./Loader";
 import Error from "./Error";
 import StartScreen from "./StartScreen";
+import Progress from "./Progress";
 import Question from "./Question";
+import NextButton from "./NextButton";
 import { useEffect, useReducer } from 'react'
 import { actions } from "./actions";
 
@@ -37,6 +39,9 @@ function reducer(state, action) {
       const wasCorrect = question.correctOption === action.payload
       const points = wasCorrect ? state.points + question.points : state.points
       return { ...state, points, answer: action.payload }
+
+    case actions.nextQuestion:
+      return { ...state, index: state.index + 1, answer: null }
     default:
       throw new Error('action is unknown')
 
@@ -49,6 +54,9 @@ function App() {
 
 
   const numQuestions = questions.length
+  const numPoints = questions.reduce((acc, curr, i) => {
+    return acc + curr.points
+  }, 0)
 
 
 
@@ -80,7 +88,12 @@ function App() {
         {status === 'loading' && <Loader />}
         {status === 'error' && <Error />}
         {status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
-        {status === 'active' && <Question question={questions[index]} dispatch={dispatch} answer={answer} />}
+        {status === 'active' && <>
+          <Progress index={index} numQuestions={numQuestions} points={points} numPoints={numPoints} />
+          <Question question={questions[index]} dispatch={dispatch} answer={answer} />
+          <NextButton dispatch={dispatch} answer={answer} /></>
+        }
+
       </Main>
     </div>
   );

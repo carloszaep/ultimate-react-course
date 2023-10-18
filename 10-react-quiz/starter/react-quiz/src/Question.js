@@ -2,7 +2,7 @@ import React from 'react';
 import { actions } from './actions';
 
 function Question({ question, dispatch, answer }) {
-    console.log(question)
+
     const answered = answer !== null
     return (
         <div>
