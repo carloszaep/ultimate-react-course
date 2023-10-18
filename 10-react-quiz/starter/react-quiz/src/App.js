@@ -15,7 +15,9 @@ const initialState = {
   questions: [],
   // 'loading' , 'error', 'ready', 'active', 'finished'
   status: 'loading',
-  index: 0
+  index: 0,
+  answer: null,
+  points: 0
 }
 function reducer(state, action) {
   switch (action.type) {
@@ -30,6 +32,11 @@ function reducer(state, action) {
 
     case actions.start:
       return { ...state, status: 'active' }
+    case actions.newAnswer:
+      const question = state.questions[state.index]
+      const wasCorrect = question.correctOption === action.payload
+      const points = wasCorrect ? state.points + question.points : state.points
+      return { ...state, points, answer: action.payload }
     default:
       throw new Error('action is unknown')
 
@@ -37,7 +44,7 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [{ questions, status, index }, dispatch] = useReducer(reducer, initialState)
+  const [{ questions, status, index, answer, points }, dispatch] = useReducer(reducer, initialState)
 
 
 
@@ -73,7 +80,7 @@ function App() {
         {status === 'loading' && <Loader />}
         {status === 'error' && <Error />}
         {status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
-        {status === 'active' && <Question question={questions[index]} />}
+        {status === 'active' && <Question question={questions[index]} dispatch={dispatch} answer={answer} />}
       </Main>
     </div>
   );
