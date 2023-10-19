@@ -13,7 +13,7 @@ import { actions } from "./actions";
 
 
 
-
+const SECFORQUESTIONS = 30
 
 const initialState = {
   questions: [],
@@ -21,7 +21,7 @@ const initialState = {
   status: 'loading',
   index: 0,
   answer: null,
-  points: 0
+  points: 0, secondsRemaining: null
 }
 function reducer(state, action) {
   switch (action.type) {
@@ -35,7 +35,7 @@ function reducer(state, action) {
       return { ...state, status: 'loading' }
 
     case actions.start:
-      return { ...state, status: 'active' }
+      return { ...state, status: 'active', secondsRemaining: state.questions.length * SECFORQUESTIONS }
 
     case actions.newAnswer:
       const question = state.questions[state.index]
@@ -49,8 +49,14 @@ function reducer(state, action) {
     case actions.finished:
       return { ...state, status: 'finished' }
 
+    case actions.resTimer:
+      return {
+        ...state, secondsRemaining: state.secondsRemaining - 1,
+        status: state.secondsRemaining <= 0 ? 'finished' : state.status
+      }
+
     case actions.restart:
-      return { ...state, status: 'ready', index: 0, answer: null, points: 0 }
+      return { ...initialState, status: 'ready', questions: state.questions }
     default:
       throw new Error('action is unknown')
 
@@ -58,7 +64,7 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [{ questions, status, index, answer, points }, dispatch] = useReducer(reducer, initialState)
+  const [{ questions, status, index, answer, points, secondsRemaining }, dispatch] = useReducer(reducer, initialState)
 
 
 
@@ -101,7 +107,7 @@ function App() {
           <Progress answer={answer} index={index} numQuestions={numQuestions} points={points} numPoints={numPoints} />
           <Question question={questions[index]} dispatch={dispatch} answer={answer} />
           <footer>
-            <Timer />
+            <Timer secondsRemaining={secondsRemaining} dispatch={dispatch} />
             <NextButton dispatch={dispatch} answer={answer} numQuestions={numQuestions} index={index} />
 
           </footer></>
