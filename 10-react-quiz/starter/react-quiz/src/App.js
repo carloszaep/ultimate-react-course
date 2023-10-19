@@ -6,6 +6,7 @@ import StartScreen from "./StartScreen";
 import Progress from "./Progress";
 import Question from "./Question";
 import NextButton from "./NextButton";
+import Timer from "./Timer";
 import FinishScreen from "./FinishScreen";
 import { useEffect, useReducer } from 'react'
 import { actions } from "./actions";
@@ -35,6 +36,7 @@ function reducer(state, action) {
 
     case actions.start:
       return { ...state, status: 'active' }
+
     case actions.newAnswer:
       const question = state.questions[state.index]
       const wasCorrect = question.correctOption === action.payload
@@ -46,6 +48,9 @@ function reducer(state, action) {
 
     case actions.finished:
       return { ...state, status: 'finished' }
+
+    case actions.restart:
+      return { ...state, status: 'ready', index: 0, answer: null, points: 0 }
     default:
       throw new Error('action is unknown')
 
@@ -95,9 +100,13 @@ function App() {
         {status === 'active' && <>
           <Progress answer={answer} index={index} numQuestions={numQuestions} points={points} numPoints={numPoints} />
           <Question question={questions[index]} dispatch={dispatch} answer={answer} />
-          <NextButton dispatch={dispatch} answer={answer} numQuestions={numQuestions} index={index} /></>
+          <footer>
+            <Timer />
+            <NextButton dispatch={dispatch} answer={answer} numQuestions={numQuestions} index={index} />
+
+          </footer></>
         }
-        {status === 'finished' && <FinishScreen points={points} numPoints={numPoints} />}
+        {status === 'finished' && <FinishScreen points={points} numPoints={numPoints} dispatch={dispatch} />}
 
       </Main>
     </div>
