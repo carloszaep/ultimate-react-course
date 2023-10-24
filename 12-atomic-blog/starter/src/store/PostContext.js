@@ -8,8 +8,6 @@ import createRandomPost from '../util/createRandomPost';
 export const PostContext = createContext()
 
 
-
-
 export function PostProvider({ children }) {
     const [posts, setPosts] = useState(() =>
         Array.from({ length: 30 }, () => createRandomPost())
