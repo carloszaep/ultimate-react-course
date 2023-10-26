@@ -1,7 +1,10 @@
 import React from 'react';
 import { actions } from './actions';
+import { useQuestionsContext } from './context/QuestionsContext';
 
-function Question({ question, dispatch, answer }) {
+function Question() {
+    const { questions, index, dispatch, answer } = useQuestionsContext()
+    const question = questions[index]
 
     const answered = answer !== null
     return (

@@ -1,7 +1,9 @@
 import React from 'react';
 import { actions } from './actions';
+import { useQuestionsContext } from './context/QuestionsContext';
 
-function NextButton({ dispatch, answer, numQuestions, index }) {
+function NextButton() {
+    const { dispatch, answer, numQuestions, index } = useQuestionsContext()
     if (answer === null) return null
 
     if (index < numQuestions - 1) return (

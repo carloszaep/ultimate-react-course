@@ -1,6 +1,8 @@
 import React from 'react';
+import { useQuestionsContext } from './context/QuestionsContext';
 
-function Progress({ index, numQuestions, points, numPoints, answer }) {
+function Progress() {
+    const { index, numQuestions, points, numPoints, answer } = useQuestionsContext()
     return (
         <header className='progress'>
             <progress max={numQuestions} value={index + Number(answer !== null)} />

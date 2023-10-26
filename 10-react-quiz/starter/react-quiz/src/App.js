@@ -8,93 +8,11 @@ import Question from "./Question";
 import NextButton from "./NextButton";
 import Timer from "./Timer";
 import FinishScreen from "./FinishScreen";
-import { useEffect, useReducer } from 'react'
-import { actions } from "./actions";
+import { useQuestionsContext } from "./context/QuestionsContext";
 
-
-
-const SECFORQUESTIONS = 30
-
-const initialState = {
-  questions: [],
-  // 'loading' , 'error', 'ready', 'active', 'finished'
-  status: 'loading',
-  index: 0,
-  answer: null,
-  points: 0, secondsRemaining: null
-}
-function reducer(state, action) {
-  switch (action.type) {
-    case actions.dataReceived:
-      return { ...state, questions: action.payload, status: 'ready' }
-
-    case actions.dataFailed:
-      return { ...state, status: 'error' }
-
-    case actions.dataLoading:
-      return { ...state, status: 'loading' }
-
-    case actions.start:
-      return { ...state, status: 'active', secondsRemaining: state.questions.length * SECFORQUESTIONS }
-
-    case actions.newAnswer:
-      const question = state.questions[state.index]
-      const wasCorrect = question.correctOption === action.payload
-      const points = wasCorrect ? state.points + question.points : state.points
-      return { ...state, points, answer: action.payload }
-
-    case actions.nextQuestion:
-      return { ...state, index: state.index + 1, answer: null }
-
-    case actions.finished:
-      return { ...state, status: 'finished' }
-
-    case actions.resTimer:
-      return {
-        ...state, secondsRemaining: state.secondsRemaining - 1,
-        status: state.secondsRemaining <= 0 ? 'finished' : state.status
-      }
-
-    case actions.restart:
-      return { ...initialState, status: 'ready', questions: state.questions }
-    default:
-      throw new Error('action is unknown')
-
-  }
-}
 
 function App() {
-  const [{ questions, status, index, answer, points, secondsRemaining }, dispatch] = useReducer(reducer, initialState)
-
-
-
-  const numQuestions = questions.length
-  const numPoints = questions.reduce((acc, curr, i) => {
-    return acc + curr.points
-  }, 0)
-
-
-
-  useEffect(() => {
-    async function fetchQuestions() {
-      try {
-        const data = await fetch('http://localhost:8000/questions')
-        dispatch({ type: actions.dataLoading })
-
-        if (!data.ok || !data) throw new Error('something happen')
-
-        const parseData = await data.json()
-
-        dispatch({ type: actions.dataReceived, payload: parseData })
-
-      } catch (err) {
-        dispatch({ type: actions.dataFailed })
-      }
-
-    }
-
-    fetchQuestions()
-  }, [])
+  const { status } = useQuestionsContext()
 
   return (
     <div className="app">
@@ -102,17 +20,16 @@ function App() {
       <Main>
         {status === 'loading' && <Loader />}
         {status === 'error' && <Error />}
-        {status === 'ready' && <StartScreen numQuestions={numQuestions} dispatch={dispatch} />}
+        {status === 'ready' && <StartScreen />}
         {status === 'active' && <>
-          <Progress answer={answer} index={index} numQuestions={numQuestions} points={points} numPoints={numPoints} />
-          <Question question={questions[index]} dispatch={dispatch} answer={answer} />
+          <Progress />
+          <Question />
           <footer>
-            <Timer secondsRemaining={secondsRemaining} dispatch={dispatch} />
-            <NextButton dispatch={dispatch} answer={answer} numQuestions={numQuestions} index={index} />
-
+            <Timer />
+            <NextButton />
           </footer></>
         }
-        {status === 'finished' && <FinishScreen points={points} numPoints={numPoints} dispatch={dispatch} />}
+        {status === 'finished' && <FinishScreen />}
 
       </Main>
     </div>
