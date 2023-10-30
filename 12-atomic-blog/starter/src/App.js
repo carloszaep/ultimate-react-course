@@ -1,19 +1,23 @@
-import { useState } from "react";
+import { memo, useMemo, useState } from "react";
 import { usePosts } from "./store/PostContext";
 import createRandomPost from "./util/createRandomPost";
 import DarkModeBtn from './DarkModeButton'
+import Test from "./Test";
+
+
 
 
 
 function App() {
 
+  const archiveOptions = useMemo(() => { return { show: false, title: 'this is archive' } }, [])
   return (
 
     <>
       <DarkModeBtn />
       <Header />
       <Main />
-      <Archive />
+      <Archive archiveOptions={archiveOptions} />
       <Footer />
     </>
 
@@ -104,30 +108,33 @@ function FormAddPost() {
 function List() {
   const { posts } = usePosts()
   return (
-    <ul>
-      {posts.map((post, i) => (
-        <li key={i}>
-          <h3>{post.title}</h3>
-          <p>{post.body}</p>
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul>
+        {posts.map((post, i) => (
+          <li key={i}>
+            <h3>{post.title}</h3>
+            <p>{post.body}</p>
+          </li>
+        ))}
+      </ul>
+      {/* <Test /> */}
+    </>
   );
 }
 
-function Archive() {
-  const { onAddPost } = usePosts()
+const Archive = memo(function Archive({ archiveOptions }) {
+  // const { onAddPost } = usePosts()
   // Here we don't need the setter function. We're only using state to store these posts because the callback function passed into useState (which generates the posts) is only called once, on the initial render. So we use this trick as an optimization technique, because if we just used a regular variable, these posts would be re-created on every render. We could also move the posts outside the components, but I wanted to show you this trick 😉
   const [posts] = useState(() =>
     // 💥 WARNING: This might make your computer slow! Try a smaller `length` first
     Array.from({ length: 10000 }, () => createRandomPost())
   );
 
-  const [showArchive, setShowArchive] = useState(false);
+  const [showArchive, setShowArchive] = useState(archiveOptions.show);
 
   return (
     <aside>
-      <h2>Post archive</h2>
+      <h2>{archiveOptions.title}</h2>
       <button onClick={() => setShowArchive((s) => !s)}>
         {showArchive ? "Hide archive posts" : "Show archive posts"}
       </button>
@@ -139,14 +146,14 @@ function Archive() {
               <p>
                 <strong>{post.title}:</strong> {post.body}
               </p>
-              <button onClick={() => onAddPost(post)}>Add as new post</button>
+              {/* <button onClick={() => onAddPost(post)}>Add as new post</button> */}
             </li>
           ))}
         </ul>
       )}
     </aside>
   );
-}
+})
 
 function Footer() {
   return <footer>&copy; by The Atomic Blog ✌️</footer>;
