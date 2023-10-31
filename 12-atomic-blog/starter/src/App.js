@@ -1,4 +1,4 @@
-import { memo, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { usePosts } from "./store/PostContext";
 import createRandomPost from "./util/createRandomPost";
 import DarkModeBtn from './DarkModeButton'
@@ -9,6 +9,8 @@ import Test from "./Test";
 
 
 function App() {
+
+  const handlerFUnction = useCallback(async () => { console.log('hello') }, [])
 
   const archiveOptions = useMemo(() => { return { show: false, title: 'this is archive' } }, [])
   return (
