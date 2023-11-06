@@ -35,7 +35,7 @@ export function withdraw(amount) {
 export function requestLoan(amount, purpose) {
     return { type: 'account/requestLoan', payload: { amount, purpose } }
 }
-export function payLoad() {
+export function payLoan() {
     return { type: 'account/payLoan' }
 }
 
