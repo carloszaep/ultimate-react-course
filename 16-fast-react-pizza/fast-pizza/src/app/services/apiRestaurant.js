@@ -32,7 +32,7 @@ export async function createOrder(newOrder) {
     const { data } = await res.json();
     return data;
   } catch {
-    throw Error('Failed creating your order');
+    throw new Error('Failed creating your order');
   }
 }
 
@@ -49,6 +49,6 @@ export async function updateOrder(id, updateObj) {
     if (!res.ok) throw new Error();
     // We don't need the data, so we don't return anything
   } catch (err) {
-    throw Error('Failed updating your order');
+    throw new Error('Failed updating your order');
   }
 }

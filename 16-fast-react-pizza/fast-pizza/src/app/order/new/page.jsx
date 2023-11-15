@@ -1,4 +1,7 @@
-// import { useState } from "react";
+'use client'
+import { useState } from "react";
+import { useFormState, useFormStatus } from 'react-dom'
+import { newOrder } from "./actions";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -30,15 +33,19 @@ const fakeCart = [
   },
 ];
 
+
 function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
+  const [state, formAction] = useFormState(newOrder, null)
+  console.log(state)
+
   const cart = fakeCart;
 
   return (
     <div>
       <h2>Ready to order? Let's go!</h2>
 
-      <form>
+      <form action={formAction}>
         <div>
           <label>First Name</label>
           <input type="text" name="customer" required />
@@ -70,6 +77,7 @@ function CreateOrder() {
         </div>
 
         <div>
+          <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <button>Order now</button>
         </div>
       </form>
