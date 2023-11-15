@@ -1,9 +1,8 @@
-import { Inter } from 'next/font/google'
 import './globals.css'
 import Header from './ui/Header'
 import CartOverview from './cart/CartOverview'
 
-const inter = Inter({ subsets: ['latin'] })
+
 
 export const metadata = {
   title: 'Fast-Pizza',
@@ -13,7 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className='bg-stone-100 text-stone-700'>
         <Header />
         <main>
           {children}
