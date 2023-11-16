@@ -13,12 +13,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className='bg-stone-100 text-stone-700'>
-        <Header />
-        <main>
-          {children}
-        </main>
+        <div className='grid h-screen grid-rows-[auto_1fr_auto]'>
 
-        <CartOverview />
+          <Header />
+          <div className='overflow-scroll my-10'>
+
+            <main className="max-w-3xl m-auto">
+              {children}
+            </main>
+          </div>
+
+          <CartOverview />
+        </div>
       </body>
     </html>
   )
