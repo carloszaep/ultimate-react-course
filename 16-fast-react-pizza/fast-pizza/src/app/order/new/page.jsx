@@ -49,25 +49,26 @@ function CreateOrder() {
         </div>
         <div>
           <label>First Name</label>
-          <input type="text" name="customer" required />
+          <input className="input" type="text" name="customer" required />
         </div>
 
         <div>
           <label>Phone number</label>
           <div>
-            <input type="tel" name="phone" required />
+            <input className="input" type="tel" name="phone" required />
           </div>
         </div>
 
         <div>
           <label>Address</label>
           <div>
-            <input type="text" name="address" required />
+            <input className="input" type="text" name="address" required />
           </div>
         </div>
 
         <div>
           <input
+            className="h-6 w-6 accent-yellow-400 focus:outline-none focus:ring focus:ring-yellow-400"
             type="checkbox"
             name="priority"
             id="priority"
@@ -79,7 +80,13 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button disabled={status.pending}>Order now</button>
+          <button disabled={status.pending} className="bg-yellow-400 transition-all
+           hover:bg-yellow-300 tracking-wide uppercase font-semibold
+            text-stone-800 py-3 px-4 inline-block rounded-full focus:outline-none focus:ring
+             focus:ring-yellow-300 focus:bg-yellow-300 focus:ring-offset-2 active:bg-slate-400
+             disable:cursor-not-allowed">
+            Order now
+          </button>
         </div>
       </form>
     </div>
