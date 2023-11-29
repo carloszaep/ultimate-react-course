@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useFormState, useFormStatus } from 'react-dom'
 import { newOrder } from "./actions";
-
+import Button from "@/app/ui/Button";
 
 
 const fakeCart = [
@@ -80,13 +80,9 @@ function CreateOrder() {
 
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
-          <button disabled={status.pending} className="bg-yellow-400 transition-all
-           hover:bg-yellow-300 tracking-wide uppercase font-semibold
-            text-stone-800 py-3 px-4 inline-block rounded-full focus:outline-none focus:ring
-             focus:ring-yellow-300 focus:bg-yellow-300 focus:ring-offset-2 active:bg-slate-400
-             disable:cursor-not-allowed">
+          <Button disabled={status.pending} >
             Order now
-          </button>
+          </Button>
         </div>
       </form>
     </div>

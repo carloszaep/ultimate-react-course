@@ -6,7 +6,7 @@ function NotFound() {
     return (
         <div>
             <h1>Something went wrong 😢</h1>
-            <p>%MESSAGE%</p>
+            <p>This page not exist</p>
             <Link href={'/'}>&larr; Go back</Link>
         </div>
     );
