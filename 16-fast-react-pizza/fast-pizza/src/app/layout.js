@@ -19,7 +19,7 @@ const roboto_mono = Roboto_Mono({
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${roboto_mono.variable}`}>
-      <body >
+      <body className='bg-stone-100'>
         <div className='grid h-screen grid-rows-[auto_1fr_auto]'>
 
           <Header />
