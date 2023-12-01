@@ -1,14 +1,36 @@
 'use client'
 import { useState } from 'react';
 import Button from '../ui/Button';
+import { useDispatch } from 'react-redux';
+import { updateName } from './userSlice';
+import { useRouter } from 'next/navigation';
+import { useSelector } from "react-redux";
 
 function CreateUser() {
-  const [username, setUsername] = useState('');
+  const [usernameToSet, setUsernameToSet] = useState('');
+  const dispatch = useDispatch()
+  const userName = useSelector(state => state.user.username)
+  const router = useRouter()
+
 
   function handleSubmit(e) {
-
     e.preventDefault();
+
+    if (!usernameToSet) return
+
+    dispatch(updateName(usernameToSet))
+
+    router.push(`/menu`)
+
+
   }
+
+  if (userName) return (
+    <div>
+      <p className='mb-4 text-sm text-stone-600 md:text-base'>👋 Welcome! {userName}</p>
+      <Button to='menu' type='primary'>Continue ordering</Button>
+    </div>
+  )
 
   return (
     <form onSubmit={handleSubmit}>
@@ -18,12 +40,12 @@ function CreateUser() {
       <input
         type="text"
         placeholder="Your full name"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
+        value={usernameToSet}
+        onChange={(e) => setUsernameToSet(e.target.value)}
         className='input w-72 mb-8 text-center'
       />
 
-      {username !== '' && (
+      {usernameToSet !== '' && (
         <div>
           <Button type='primary'>Start ordering</Button>
         </div>

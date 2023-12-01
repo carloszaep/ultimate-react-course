@@ -9,8 +9,8 @@ function SearchOrder() {
 
     function handlerSummit(e) {
         e.preventDefault()
-        router.push(`/order/${query}`)
         if (!query) return
+        router.push(`/order/${query}`)
     }
 
     return (

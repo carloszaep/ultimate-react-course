@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFormState, useFormStatus } from 'react-dom'
 import { newOrder } from "./actions";
 import Button from "@/app/ui/Button";
+import { useSelector } from "react-redux";
 
 
 const fakeCart = [
@@ -34,7 +35,7 @@ function CreateOrder() {
   // const [withPriority, setWithPriority] = useState(false);
   const [state, formAction] = useFormState(newOrder, null)
   const status = useFormStatus();
-
+  const userName = useSelector(state => state.user.username)
 
 
   const cart = fakeCart;
@@ -49,7 +50,7 @@ function CreateOrder() {
         </div>
         <div className="mb-5 flex gap-2 flex-col sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input className="input" type="text" name="customer" required />
+          <input className="input" type="text" name="customer" required defaultValue={userName} />
         </div>
 
         <div className="mb-5 flex gap-2 flex-col sm:flex-row sm:items-center">
