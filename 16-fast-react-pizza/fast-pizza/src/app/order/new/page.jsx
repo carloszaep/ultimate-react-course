@@ -4,41 +4,29 @@ import { useFormState, useFormStatus } from 'react-dom'
 import { newOrder } from "./actions";
 import Button from "@/app/ui/Button";
 import { useSelector } from "react-redux";
+import { getCart, getTotalCartPrice } from '@/app/cart/cartSlice';
+import EmptyCart from '@/app/cart/EmptyCart';
+import { formatCurrency } from '@/app/utils/helpers';
 
 
-const fakeCart = [
-  {
-    pizzaId: 12,
-    name: "Mediterranean",
-    quantity: 2,
-    unitPrice: 16,
-    totalPrice: 32,
-  },
-  {
-    pizzaId: 6,
-    name: "Vegetale",
-    quantity: 1,
-    unitPrice: 13,
-    totalPrice: 13,
-  },
-  {
-    pizzaId: 11,
-    name: "Spinach and Mushroom",
-    quantity: 1,
-    unitPrice: 15,
-    totalPrice: 15,
-  },
-];
+
+
 
 
 function CreateOrder() {
-  // const [withPriority, setWithPriority] = useState(false);
   const [state, formAction] = useFormState(newOrder, null)
   const status = useFormStatus();
   const userName = useSelector(state => state.user.username)
+  const cart = useSelector(getCart)
+  const totalPrice = useSelector(getTotalCartPrice)
 
 
-  const cart = fakeCart;
+
+  if (!cart.length) return <EmptyCart />
+
+
+
+
 
   return (
     <div className="py-6 px-4">
@@ -82,7 +70,7 @@ function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button type='primary' disabled={status.pending} >
-            Order now
+            Order now {formatCurrency(totalPrice)}
           </Button>
         </div>
       </form>
