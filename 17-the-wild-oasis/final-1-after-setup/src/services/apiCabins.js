@@ -3,6 +3,7 @@ import supabase from "./supabase"
 export async function getCabins() {
 
     try {
+
         const { data, error } = await supabase
             .from('cabins')
             .select('*')
