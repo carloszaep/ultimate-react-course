@@ -82,9 +82,9 @@ function CabinTable() {
           <div></div>
         </Table.Header>
 
-        {/* {cabins.map((cabin) => (
-            <CabinRow key={cabin.id} cabin={cabin} />
-          ))} */}
+        {cabins.map((cabin) => (
+          <CabinRow key={cabin.id} cabin={cabin} />
+        ))}
 
         {/* Render props! */}
         <Table.Body
